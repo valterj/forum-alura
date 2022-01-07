@@ -2,12 +2,18 @@ package br.com.alura.forum.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import br.com.alura.forum.modelo.Topico;
 
-public interface TopicoRepository extends JpaRepository<Topico, Long> {
+public interface TopicoDomainRepository {
 
+	List<Topico> findAll();
+	
 	List<Topico> findByCursoNome(String nomeCurso);
+
+	void save(Topico topico);
+
+	Topico get(Long id);
+
+	void deleteById(Long id);
 
 }

@@ -1,12 +1,10 @@
 package br.com.alura.forum.controller.form;
 
-import java.util.Optional;
-
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import br.com.alura.forum.modelo.Topico;
-import br.com.alura.forum.repository.TopicoRepository;
+import br.com.alura.forum.repository.TopicoDomainRepository;
 
 public class AtualizacaoTopicoForm {
 
@@ -34,17 +32,11 @@ public class AtualizacaoTopicoForm {
 		this.mensagem = mensagem;
 	}
 
-	public Topico atualizar(Long id, TopicoRepository topicoRepository) {
-		Optional<Topico> optional = topicoRepository.findById(id);
-		
-		if (optional.isPresent()) {
-			var topico = optional.get();
-			topico.setTitulo(titulo);
-			topico.setMensagem(mensagem);
-			return topico;
-		}
-		
-		return null;
+	public Topico atualizar(Long id, TopicoDomainRepository topicoRepository) {
+		Topico topico = topicoRepository.get(id);
+		topico.setTitulo(titulo);
+		topico.setMensagem(mensagem);
+		return topico;
 	}
 
 }

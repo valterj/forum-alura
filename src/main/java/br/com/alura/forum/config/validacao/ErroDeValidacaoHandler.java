@@ -1,6 +1,7 @@
 package br.com.alura.forum.config.validacao;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import br.com.alura.forum.exception.EntidadeNaoEncontradaException;
 
 @RestControllerAdvice
 public class ErroDeValidacaoHandler {
@@ -34,6 +37,25 @@ public class ErroDeValidacaoHandler {
 		});
 			
 		return erros;
+	}
+	
+	@ResponseStatus(code = NOT_FOUND)
+	@ExceptionHandler(EntidadeNaoEncontradaException.class)
+	public MensagemSimplificada handle(EntidadeNaoEncontradaException exception) {
+		return new MensagemSimplificada("Entidade não encontrada.");
+	}
+	
+	class MensagemSimplificada {
+		private String mensagem;
+
+		public MensagemSimplificada(String mensagem) {
+			super();
+			this.mensagem = mensagem;
+		}
+		
+		public String getMensagem() {
+			return this.mensagem;
+		}
 	}
 
 }

@@ -2,7 +2,6 @@ package br.com.alura.forum.controller;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -25,14 +24,14 @@ import br.com.alura.forum.controller.form.AtualizacaoTopicoForm;
 import br.com.alura.forum.controller.form.TopicoForm;
 import br.com.alura.forum.modelo.Topico;
 import br.com.alura.forum.repository.CursoRepository;
-import br.com.alura.forum.repository.TopicoRepository;
+import br.com.alura.forum.repository.TopicoDomainRepository;
 
 @RestController
 @RequestMapping("/topicos")
 public class TopicosController {
 
 	@Autowired
-	private TopicoRepository topicoRepository;
+	private TopicoDomainRepository topicoRepository;
 
 	@Autowired
 	private CursoRepository cursoRepository;
@@ -59,38 +58,22 @@ public class TopicosController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<DetalhesDoTopicoDto> detalhar(@PathVariable Long id) {
-		Optional<Topico> optional = topicoRepository.findById(id);
-
-		if (optional.isPresent()) {
-			return ResponseEntity.ok(new DetalhesDoTopicoDto(optional.get()));
-		}
-
-		return ResponseEntity.notFound().build();
+		Topico topico = topicoRepository.get(id);
+		return ResponseEntity.ok(new DetalhesDoTopicoDto(topico));
 	}
 
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<TopicoDto> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoForm form) {
-		Optional<Topico> optional = topicoRepository.findById(id);
-
-		if (optional.isPresent()) {
-			Topico topico = form.atualizar(id, topicoRepository);
-			return ResponseEntity.ok(new TopicoDto(topico));
-		}
-
-		return ResponseEntity.notFound().build();
+		Topico topico = form.atualizar(id, topicoRepository);
+		return ResponseEntity.ok(new TopicoDto(topico));
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> remover(@PathVariable Long id) {
-		Optional<Topico> optional = topicoRepository.findById(id);
-
-		if (optional.isPresent()) {
-			topicoRepository.deleteById(id);
-			return ResponseEntity.ok().build();
-		}
-		
-		return ResponseEntity.notFound().build();
+		Topico topico = topicoRepository.get(id);
+		topicoRepository.deleteById(topico.getId());
+		return ResponseEntity.ok().build();
 	}
 
 }
